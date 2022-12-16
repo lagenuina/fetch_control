@@ -1,9 +1,11 @@
-import keyboard
-
+# Dummy function
 def pass_func(**kwargs):
     pass
 
 class keyStateMachine:
+
+    _registry = []
+
     def __init__(self, key_name="", 
                         key_modifier="",
                         on_press=pass_func, 
@@ -23,10 +25,11 @@ class keyStateMachine:
         self.on_hold = on_hold
         self.on_release = on_release
 
-        keyboard.hook_key(key=self.key_name, callback=self.key_callback, suppress=False)
+        self._registry.append(self)
 
-    def key_callback(self, event):
+    def key_callback(self, event, event_modifiers):
         self.event = event
+        self.event_modifiers = event_modifiers
         self.modifier_present = False
 
         # Check for modifier
@@ -34,48 +37,50 @@ class keyStateMachine:
             self.modifier_present = True
 
         else:
-            if self.key_modifier in self.event.modifiers:
+            if self.key_modifier in self.event_modifiers:
                 self.modifier_present = True
 
             else:
                 self.modifier_present = False
-            
 
         # Key is pressed initially
-        if self.event.event_type == "down" and self.modifier_present and self.key_state == "released":
+        if self.event == "down" and self.modifier_present and self.key_state == "released":
             self.key_state = "pressed"
+            try:
+                self.on_press(**self.kwargs)
+                # print("on_press")
 
-            self.on_press(**self.kwargs)
+            except Exception as e:
+                print(e)
+            
 
         # Key is pressed constantly
-        elif self.event.event_type == "down" and self.modifier_present and self.key_state == "pressed":
+        elif self.event == "down" and self.modifier_present and self.key_state == "pressed":
             self.key_state = "pressed"
+            try:
+                self.on_hold(**self.kwargs)
+                # print("on_hold")
 
-            self.on_hold(**self.kwargs)
+            except Exception as e:
+                print(e)
 
         # Key is released
-        elif self.event.event_type == "up" and self.modifier_present and self.key_state == "pressed":
+        elif (self.event == "up" or not self.modifier_present) and self.key_state == "pressed":
             self.key_state = "released"
+            try:
+                self.on_release(**self.kwargs)
+                # print("on_release")
 
-            self.on_release(**self.kwargs)
-
+            except Exception as e:
+                print(e)
 
 if __name__ == "__main__":
-    # rospy.init_node("keyboard_test", anonymous=True)
+    import key_listener as kl
 
-    def test1(**kwargs):
-        print(kwargs['one'])
-
-    def test2(**kwargs):
-        print(kwargs['two'])
-
-    def test3(**kwargs):
-        print(3)
-
-    keyStateMachine(key_name="w", key_modifier="", on_press=test1, on_release=test3)
+    kl.keyboard_init()
 
     # Main loop
     while True:
         pass
-
     
+
