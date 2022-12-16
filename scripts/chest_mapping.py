@@ -18,20 +18,22 @@ class chestMapping():
 
         # Init keys
         # Fast motion
-        ksm.keyStateMachine(key_name='w', on_hold=self.move_up, z_vel = self.high_velocity)
-        ksm.keyStateMachine(key_name='s', on_hold=self.move_down, z_vel = self.high_velocity)
+        ksm.keyStateMachine(key_name='w', on_press=self.move_vel, on_release=self.stop, vel = self.high_velocity)
+        ksm.keyStateMachine(key_name='s', on_press=self.move_vel, on_release=self.stop, vel = -1*self.high_velocity)
 
         # Slow motion
-        ksm.keyStateMachine(key_name='w', key_modifier="shift", on_hold=self.move_up, z_vel=self.low_velocity)
-        ksm.keyStateMachine(key_name='s', key_modifier="shift", on_hold=self.move_down, z_vel=self.low_velocity)
+        ksm.keyStateMachine(key_name='w', key_modifier="shift", on_press=self.move_vel, on_release=self.stop, vel=self.low_velocity)
+        ksm.keyStateMachine(key_name='s', key_modifier="shift", on_press=self.move_vel, on_release=self.stop, vel=-1*self.low_velocity)
 
-        ksm.keyStateMachine(key_name='h', on_hold=self.homing)
-        ksm.keyStateMachine(key_name='space', on_hold=self.stop)
+        # Special actions
+        ksm.keyStateMachine(key_name='h', on_press=self.homing)
+        ksm.keyStateMachine(key_name='space', on_press=self.stop_srv)
 
         # Predefined positions
-        ksm.keyStateMachine(key_name='f1', key_modifier="shift", on_hold=self.low_position, low_pos=self.low_pos, vel=self.low_velocity)
-        ksm.keyStateMachine(key_name='f2', key_modifier="shift", on_hold=self.middle_position, low_pos=self.mid_pos, vel=self.low_velocity)
-        ksm.keyStateMachine(key_name='f3', key_modifier="shift", on_hold=self.high_position, low_pos=self.high_pos, vel=self.low_velocity)
+        ksm.keyStateMachine(key_name='f1', key_modifier="shift", on_press=self.high_position, pos=self.high_pos, vel=self.low_velocity)
+        ksm.keyStateMachine(key_name='f2', key_modifier="shift", on_press=self.middle_position, pos=self.mid_pos, vel=self.low_velocity)
+        ksm.keyStateMachine(key_name='f3', key_modifier="shift", on_press=self.low_position, pos=self.low_pos, vel=self.low_velocity)
+
 
         # Init topics and services
         self.z_chest_vel_pub = rospy.Publisher('z_chest_vel', Twist, queue_size=1)
@@ -47,29 +49,34 @@ class chestMapping():
         
         
     # TODO: Add responses
-    def pub_vel(self, z_vel):
+    def pub_vel(self, vel):
         msg = Twist()
-        msg.linear.z = z_vel
-        self.z_axis_twist_pub.publish(msg)
+        msg.linear.z = vel
+        self.z_chest_vel_pub.publish(msg)
 
-    def move_up(self, **kwargs):
-        self.pub_vel(kwargs['z_vel'])
-
-    def move_down(self, **kwargs):
-        self.pub_vel(-1 * kwargs['z_vel'])
+    def move_vel(self, **kwargs):
+        self.pub_vel(kwargs['vel'])
 
     def stop(self, **kwargs):
+        self.pub_vel(0)
+
+    def stop_srv(self, **kwargs):
         self.chest_stop_srv(1)
+
+        # TODO: Service response
+        response = True
+
+        return response
 
     def homing(self, **kwargs):
         self.homing_srv(1)
 
     def low_position(self, **kwargs):
-        self.abspos_srv(position=kwargs['low_pos'], velocity=kwargs['vel'])
+        self.abspos_srv(position=kwargs['pos'], velocity=kwargs['vel'])
     
     def middle_position(self, **kwargs):
-        self.abspos_srv(position=kwargs['mid_pos'], velocity=kwargs['vel'])
+        self.abspos_srv(position=kwargs['pos'], velocity=kwargs['vel'])
 
     def high_position(self, **kwargs):
-        self.abspos_srv(position=kwargs['high_pos'], velocity=kwargs['vel'])
+        self.abspos_srv(position=kwargs['pos'], velocity=kwargs['vel'])
 
