@@ -8,8 +8,9 @@ from gopher_ros_clearcore.srv import *
 import key_state_machine as ksm
 
 class chestMapping():
-    def __init__(self):
+    def __init__(self, name):
         # Variables
+        self.name = name
         self.high_velocity = 1.0
         self.low_velocity = 0.5
         self.high_pos = 440
@@ -18,21 +19,21 @@ class chestMapping():
 
         # Init keys
         # Fast motion
-        ksm.keyStateMachine(key_name='w', on_press=self.move_vel, on_release=self.stop, vel = self.high_velocity)
-        ksm.keyStateMachine(key_name='s', on_press=self.move_vel, on_release=self.stop, vel = -1*self.high_velocity)
+        ksm.keyStateMachine(parent_name=self.name, key_name='w', on_press=self.move_vel, on_release=self.stop, vel = self.high_velocity)
+        ksm.keyStateMachine(parent_name=self.name, key_name='s', on_press=self.move_vel, on_release=self.stop, vel = -1*self.high_velocity)
 
         # Slow motion
-        ksm.keyStateMachine(key_name='w', key_modifier="shift", on_press=self.move_vel, on_release=self.stop, vel=self.low_velocity)
-        ksm.keyStateMachine(key_name='s', key_modifier="shift", on_press=self.move_vel, on_release=self.stop, vel=-1*self.low_velocity)
+        ksm.keyStateMachine(parent_name=self.name, key_name='w', key_modifier="shift", on_press=self.move_vel, on_release=self.stop, vel=self.low_velocity)
+        ksm.keyStateMachine(parent_name=self.name, key_name='s', key_modifier="shift", on_press=self.move_vel, on_release=self.stop, vel=-1*self.low_velocity)
 
         # Special actions
-        ksm.keyStateMachine(key_name='h', on_press=self.homing)
-        ksm.keyStateMachine(key_name='space', on_press=self.stop_srv)
+        ksm.keyStateMachine(parent_name=self.name, key_name='h', on_press=self.homing)
+        ksm.keyStateMachine(parent_name=self.name, key_name='space', on_press=self.stop_srv)
 
         # Predefined positions
-        ksm.keyStateMachine(key_name='f1', key_modifier="shift", on_press=self.high_position, pos=self.high_pos, vel=self.low_velocity)
-        ksm.keyStateMachine(key_name='f2', key_modifier="shift", on_press=self.middle_position, pos=self.mid_pos, vel=self.low_velocity)
-        ksm.keyStateMachine(key_name='f3', key_modifier="shift", on_press=self.low_position, pos=self.low_pos, vel=self.low_velocity)
+        ksm.keyStateMachine(parent_name=self.name, key_name='f1', key_modifier="shift", on_press=self.high_position, pos=self.high_pos, vel=self.low_velocity)
+        ksm.keyStateMachine(parent_name=self.name, key_name='f2', key_modifier="shift", on_press=self.middle_position, pos=self.mid_pos, vel=self.low_velocity)
+        ksm.keyStateMachine(parent_name=self.name, key_name='f3', key_modifier="shift", on_press=self.low_position, pos=self.low_pos, vel=self.low_velocity)
 
 
         # Init topics and services

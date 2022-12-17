@@ -6,13 +6,16 @@ class keyStateMachine:
 
     _registry = []
 
-    def __init__(self, key_name="", 
+    def __init__(self, parent_name="",
+                        key_name="", 
                         key_modifier="",
                         on_press=pass_func, 
                         on_hold=pass_func, 
                         on_release=pass_func,
                         **kwargs):
+        
         # Flags
+        self.parent_name = parent_name
         self.key_name = key_name
         self.key_modifier = key_modifier
         self.key_state = "released"

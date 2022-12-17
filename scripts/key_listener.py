@@ -2,8 +2,23 @@ from pynput import keyboard
 import key_state_machine as ksm
 
 # Special modifier keys which should be considered as regular alphanumeric keys
-special_modifiers = ["space", "esc", "tab", "enter", "backspace", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12"]
+special_modifiers = ["space", "esc", "tab", "enter", "backspace", 
+                    "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12",
+                    "up", "down", "left", "right"] 
 
+# A variable which helps to find a parent class instance name of a keyStateMachine class instance:
+# E.g. key "w" is defined in two other classes "chestMapping" and "armMapping". "/chest" is a name 
+# variable of an instance of a "chestMapping" class and "/right" is a name variable of an instance
+# of a "armMapping" class. To call an on_press function which has a functionality of a "armMapping"
+# class, but not "chestMapping" we need to change "target_name" variable to "/chest", so the
+# corresponding method will be called. 
+# - Keys from the "ignore_target_name" list ignore "target_name" variable and are supposed to have
+# the same functionality accross all parent classes. Use to for keys which allow to switch "target_
+# name" variable.
+
+target_name = ""
+
+ingore_target_name = ["up", "down", "left", "right"]
 
 def on_press(key):
         global pressed_keys, pressed_modifiers
@@ -25,10 +40,11 @@ def on_press(key):
             elif key_name not in special_modifiers and key_name not in pressed_modifiers:
                 pressed_modifiers.append(key_name)
 
-        # Iterate over all keys of interest
+        # Iterate over all keys of interest  
         for keyObject in ksm.keyStateMachine._registry:
-            if keyObject.key_name in pressed_keys:
-                keyObject.key_callback("down", pressed_modifiers)
+            if keyObject.parent_name == target_name or keyObject.key_name in ingore_target_name:
+                if keyObject.key_name in pressed_keys:
+                    keyObject.key_callback("down", pressed_modifiers)
 
         # print(pressed_keys)
         # print(pressed_modifiers)
@@ -54,10 +70,11 @@ def on_release(key):
             elif key_name not in special_modifiers and key_name in pressed_modifiers:
                 pressed_modifiers.remove(key_name)
 
-        # Iterate over all keys of interest
-        for keyObject in ksm.keyStateMachine._registry:
-            if keyObject.key_name not in pressed_keys:
-                keyObject.key_callback("up", pressed_modifiers)
+        # Iterate over all keys of interest  
+        for keyObject in ksm.keyStateMachine._registry: 
+            if keyObject.parent_name == target_name or keyObject.key_name in ingore_target_name:
+                if keyObject.key_name not in pressed_keys:
+                    keyObject.key_callback("up", pressed_modifiers)
 
         # print(pressed_keys)
         # print(pressed_modifiers)
