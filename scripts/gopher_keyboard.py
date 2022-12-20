@@ -5,6 +5,7 @@ import rospy
 import key_listener as kl
 from chest_mapping import chestMapping
 from arm_mapping import armMapping
+from base_mapping import baseMapping
 
 import key_state_machine as ksm
 
@@ -26,6 +27,7 @@ if __name__ == '__main__':
     rightArmControls = armMapping("/right", 0, -45, 90)
     leftArmControls = armMapping("/left", 0, -45, -90)
     chestControls = chestMapping("/chest")
+    baseControls = baseMapping("/chest")
 
     ksm.keyStateMachine(key_name='up', on_press=change_module, module_name="/chest")
     ksm.keyStateMachine(key_name='down', on_press=change_module, module_name="/base")
