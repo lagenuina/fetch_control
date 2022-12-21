@@ -52,16 +52,16 @@ class baseMapping():
 
         # Init keys
         # Fast motion
-        ksm.keyStateMachine(parent_name=self.name, key_name='w', on_press=self.set_vel, on_release=self.reset_vel, type="lin")
-        ksm.keyStateMachine(parent_name=self.name, key_name='s', on_press=self.set_vel, on_release=self.reset_vel, type="lin")
-        ksm.keyStateMachine(parent_name=self.name, key_name='a', on_press=self.set_vel, on_release=self.reset_vel, type="rot")
-        ksm.keyStateMachine(parent_name=self.name, key_name='d', on_press=self.set_vel, on_release=self.reset_vel, type="rot")
+        ksm.keyStateMachine(parent_name=self.name, key_name='w', on_press=self.set_vel, on_release=self.reset_vel, type="lin", dir='forw')
+        ksm.keyStateMachine(parent_name=self.name, key_name='s', on_press=self.set_vel, on_release=self.reset_vel, type="lin", dir='back')
+        ksm.keyStateMachine(parent_name=self.name, key_name='a', on_press=self.set_vel, on_release=self.reset_vel, type="rot", dir='left')
+        ksm.keyStateMachine(parent_name=self.name, key_name='d', on_press=self.set_vel, on_release=self.reset_vel, type="rot", dir='right')
 
         # Slow motion
-        ksm.keyStateMachine(parent_name=self.name, key_name='w', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, type="lin")
-        ksm.keyStateMachine(parent_name=self.name, key_name='s', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, type="lin")
-        ksm.keyStateMachine(parent_name=self.name, key_name='a', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, type="rot")
-        ksm.keyStateMachine(parent_name=self.name, key_name='d', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, type="rot")
+        # ksm.keyStateMachine(parent_name=self.name, key_name='w', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, type="lin")
+        # ksm.keyStateMachine(parent_name=self.name, key_name='s', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, type="lin")
+        # ksm.keyStateMachine(parent_name=self.name, key_name='a', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, type="rot")
+        # ksm.keyStateMachine(parent_name=self.name, key_name='d', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, type="rot")
 
         # Init topics and services
         self.twist_pub = rospy.Publisher('base_controller/command', Twist, queue_size=1)
@@ -69,18 +69,18 @@ class baseMapping():
 
     def set_vel(self, **kwargs):
         if kwargs['type'] == "lin":
-            self.current_lin_accel = self.max_lin_accel
+            if kwargs['dir'] == "forw":
+                self.current_lin_accel = self.max_lin_accel
+
+            elif kwargs['dir'] == "back":
+                self.current_lin_accel = self.min_lin_accel
 
         elif kwargs['type'] == "rot":
-            self.current_rot_accel = self.max_rot_accel
+            if kwargs['dir'] == "left":
+                self.current_rot_accel = self.max_rot_accel
 
-        try:
-            accel = Float32()
-            accel.data = self.current_lin_accel
-            self.accel_pub.publish(accel)
-
-        except Exception as e:
-            print(e)
+            elif kwargs['dir'] == "right":
+                self.current_rot_accel = self.min_rot_accel
 
         self.update_target_vel()
         self.pub_target_vel()   
