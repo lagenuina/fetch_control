@@ -3,7 +3,7 @@
 import rospy
 
 from geometry_msgs.msg import Twist
-from math import pi
+import math
 
 import key_state_machine as ksm
 
@@ -21,10 +21,10 @@ class baseMapping():
 
         self.max_lin_vel = 0.5 # meters
 
-        self.max_rot_vel = pi/4.0 # rads per sec (90 degrees per sec)
+        self.max_rot_vel = math.radians(60)
 
-        self.lin_accel = self.calc_accel(vel = self.max_lin_vel, time = 1.0)
-        self.rot_accel = self.calc_accel(vel = self.max_rot_vel, time = 0.1)
+        self.lin_accel = 0.5 / 1.0          # m/s^2
+        self.rot_accel = math.radians(600)  # rad/s^2
            
         self.previous_time = rospy.get_time()
 
@@ -36,10 +36,10 @@ class baseMapping():
         ksm.keyStateMachine(parent_name=self.name, key_name='d', on_press=self.set_vel, on_release=self.reset_vel, type="rot", vel=-1*self.max_rot_vel)
 
         # Slow motion
-        # ksm.keyStateMachine(parent_name=self.name, key_name='w', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, type="lin")
-        # ksm.keyStateMachine(parent_name=self.name, key_name='s', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, type="lin")
-        # ksm.keyStateMachine(parent_name=self.name, key_name='a', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, type="rot")
-        # ksm.keyStateMachine(parent_name=self.name, key_name='d', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, type="rot")
+        ksm.keyStateMachine(parent_name=self.name, key_name='w', key_modifier='shift', on_press=self.set_vel, on_release=self.reset_vel, type="lin", vel=0.15)
+        ksm.keyStateMachine(parent_name=self.name, key_name='s', key_modifier='shift', on_press=self.set_vel, on_release=self.reset_vel, type="lin", vel=-1*0.15)
+        ksm.keyStateMachine(parent_name=self.name, key_name='a', key_modifier='shift', on_press=self.set_vel, on_release=self.reset_vel, type="rot", vel=self.max_rot_vel*0.25)
+        ksm.keyStateMachine(parent_name=self.name, key_name='d', key_modifier='shift', on_press=self.set_vel, on_release=self.reset_vel, type="rot", vel=-1*self.max_rot_vel*0.25)
 
         # Init topics and services
         self.twist_pub = rospy.Publisher('base_controller/command', Twist, queue_size=1)
@@ -59,16 +59,6 @@ class baseMapping():
 
         elif kwargs['type'] == "rot":
             self.target_rot_vel = 0.0
-
-
-    def calc_accel(self, vel, time):
-        '''
-        @params vel [m/sec or rad/sec]
-        @params time [sec]
-
-        returns - the acceleration
-        '''
-        return float(vel)/float(time)
 
 
     def get_time_step_in_sec(self):
@@ -96,7 +86,7 @@ class baseMapping():
   
         # Publish a message
         self.twist_pub.publish(msg)
-        print(round(self.current_lin_vel, 2), round(self.current_rot_vel, 2))
+        # print(round(self.current_lin_vel, 2), round(self.current_rot_vel, 2))
 
 
     def update_vel(self, target_vel, current_vel, accel):
