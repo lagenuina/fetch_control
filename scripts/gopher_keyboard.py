@@ -46,8 +46,8 @@ if __name__ == '__main__':
 
     while not rospy.is_shutdown():
         # Update mobile base velocities and publish
-        baseControls.update_target_vel()
-        baseControls.pub_target_vel()
+        baseControls.pub_vel()
+
 
 
     # Safe function if the node dies: only service calls or parameter setting (NO PUBLISHING)
