@@ -39,27 +39,48 @@ class armMapping:
         ksm.keyStateMachine(parent_name=self.name, key_name='e', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=2, value=-1*self.lin_vel*0.25)
 
         # Angular
-        # Fast motion
-        ksm.keyStateMachine(parent_name=self.name, key_name='l', on_press=self.set_vel, on_release=self.reset_vel, index=3, value=self.rot_vel)
-        ksm.keyStateMachine(parent_name=self.name, key_name='j', on_press=self.set_vel, on_release=self.reset_vel, index=3, value=-1*self.rot_vel)
-        ksm.keyStateMachine(parent_name=self.name, key_name='k', on_press=self.set_vel, on_release=self.reset_vel, index=4, value=self.rot_vel)
-        ksm.keyStateMachine(parent_name=self.name, key_name='i', on_press=self.set_vel, on_release=self.reset_vel, index=4, value=-1*self.rot_vel)
-        ksm.keyStateMachine(parent_name=self.name, key_name='o', on_press=self.set_vel, on_release=self.reset_vel, index=5, value=self.rot_vel)
-        ksm.keyStateMachine(parent_name=self.name, key_name='u', on_press=self.set_vel, on_release=self.reset_vel, index=5, value=-1*self.rot_vel)
         
-        # Slow motion
-        ksm.keyStateMachine(parent_name=self.name, key_name='l', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=3, value=self.rot_vel*0.25)
-        ksm.keyStateMachine(parent_name=self.name, key_name='j', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=3, value=-1*self.rot_vel*0.25)
-        ksm.keyStateMachine(parent_name=self.name, key_name='k', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=4, value=self.rot_vel*0.25)
-        ksm.keyStateMachine(parent_name=self.name, key_name='i', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=4, value=-1*self.rot_vel*0.25)
-        ksm.keyStateMachine(parent_name=self.name, key_name='o', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=5, value=self.rot_vel*0.25)
-        ksm.keyStateMachine(parent_name=self.name, key_name='u', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=5, value=-1*self.rot_vel*0.25)
+        # TODO: Remove if statement
+        if self.name == "/right":
+            # Fast motion
+            ksm.keyStateMachine(parent_name=self.name, key_name='l', on_press=self.set_vel, on_release=self.reset_vel, index=3, value=self.rot_vel)
+            ksm.keyStateMachine(parent_name=self.name, key_name='j', on_press=self.set_vel, on_release=self.reset_vel, index=3, value=-1*self.rot_vel)
+            ksm.keyStateMachine(parent_name=self.name, key_name='k', on_press=self.set_vel, on_release=self.reset_vel, index=4, value=self.rot_vel)
+            ksm.keyStateMachine(parent_name=self.name, key_name='i', on_press=self.set_vel, on_release=self.reset_vel, index=4, value=-1*self.rot_vel)
+            ksm.keyStateMachine(parent_name=self.name, key_name='o', on_press=self.set_vel, on_release=self.reset_vel, index=5, value=self.rot_vel)
+            ksm.keyStateMachine(parent_name=self.name, key_name='u', on_press=self.set_vel, on_release=self.reset_vel, index=5, value=-1*self.rot_vel)
+            
+            # Slow motion
+            ksm.keyStateMachine(parent_name=self.name, key_name='l', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=3, value=self.rot_vel*0.25)
+            ksm.keyStateMachine(parent_name=self.name, key_name='j', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=3, value=-1*self.rot_vel*0.25)
+            ksm.keyStateMachine(parent_name=self.name, key_name='k', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=4, value=self.rot_vel*0.25)
+            ksm.keyStateMachine(parent_name=self.name, key_name='i', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=4, value=-1*self.rot_vel*0.25)
+            ksm.keyStateMachine(parent_name=self.name, key_name='o', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=5, value=self.rot_vel*0.25)
+            ksm.keyStateMachine(parent_name=self.name, key_name='u', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=5, value=-1*self.rot_vel*0.25)
+
+        elif self.name == "/left":
+            # Fast motion
+            ksm.keyStateMachine(parent_name=self.name, key_name='j', on_press=self.set_vel, on_release=self.reset_vel, index=3, value=self.rot_vel)
+            ksm.keyStateMachine(parent_name=self.name, key_name='l', on_press=self.set_vel, on_release=self.reset_vel, index=3, value=-1*self.rot_vel)
+            ksm.keyStateMachine(parent_name=self.name, key_name='i', on_press=self.set_vel, on_release=self.reset_vel, index=4, value=self.rot_vel)
+            ksm.keyStateMachine(parent_name=self.name, key_name='k', on_press=self.set_vel, on_release=self.reset_vel, index=4, value=-1*self.rot_vel)
+            ksm.keyStateMachine(parent_name=self.name, key_name='u', on_press=self.set_vel, on_release=self.reset_vel, index=5, value=self.rot_vel)
+            ksm.keyStateMachine(parent_name=self.name, key_name='o', on_press=self.set_vel, on_release=self.reset_vel, index=5, value=-1*self.rot_vel)
+            
+            # Slow motion
+            ksm.keyStateMachine(parent_name=self.name, key_name='j', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=3, value=self.rot_vel*0.25)
+            ksm.keyStateMachine(parent_name=self.name, key_name='l', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=3, value=-1*self.rot_vel*0.25)
+            ksm.keyStateMachine(parent_name=self.name, key_name='i', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=4, value=self.rot_vel*0.25)
+            ksm.keyStateMachine(parent_name=self.name, key_name='k', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=4, value=-1*self.rot_vel*0.25)
+            ksm.keyStateMachine(parent_name=self.name, key_name='u', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=5, value=self.rot_vel*0.25)
+            ksm.keyStateMachine(parent_name=self.name, key_name='o', key_modifier="shift", on_press=self.set_vel, on_release=self.reset_vel, index=5, value=-1*self.rot_vel*0.25)
+
 
         # Special action
         ksm.keyStateMachine(parent_name=self.name, key_name='2', on_press=self.gripper_move, on_release=self.gripper_stop, mode=2, value=self.gripper_vel)   # Close gripper
         ksm.keyStateMachine(parent_name=self.name, key_name='1', on_press=self.gripper_move, on_release=self.gripper_stop, mode=2, value=-1*self.gripper_vel)   # Open gripper
        
-        # Predefined positions
+        # TODO: Predefined positions
         # ksm.keyStateMachine(parent_name=self.name, key_name='f1', key_modifier="shift")
         # ksm.keyStateMachine(parent_name=self.name, key_name='f2', key_modifier="shift")
         # ksm.keyStateMachine(parent_name=self.name, key_name='f3', key_modifier="shift")

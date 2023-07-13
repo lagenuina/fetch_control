@@ -23,11 +23,12 @@ def change_module(**kwargs):
 
 if __name__ == '__main__':
 
-    
+    rospy.init_node("gopher_keyboard_control", anonymous=True)   
+
     rightArmControls = armMapping("/right", 0, -45, 90)
     leftArmControls = armMapping("/left", 0, -45, -90)
     chestControls = chestMapping("/chest")
-    baseControls = baseMapping("/chest")
+    baseControls = baseMapping("/base")
 
     ksm.keyStateMachine(key_name='up', on_press=change_module, module_name="/chest")
     ksm.keyStateMachine(key_name='down', on_press=change_module, module_name="/base")
@@ -35,9 +36,6 @@ if __name__ == '__main__':
     ksm.keyStateMachine(key_name='right', on_press=change_module, module_name="/right")
 
     kl.keyboard_init()
-
-    rospy.init_node("gopher_keyboard_control", anonymous=True)
-
 
     # for keyObject in ksm.keyStateMachine._registry:
 
@@ -47,7 +45,10 @@ if __name__ == '__main__':
     #     # print(keyObject.key_name, keyObject.on_press.__self__.__class__.__name__)
 
     while not rospy.is_shutdown():
-        pass
+        # Update mobile base velocities and publish
+        baseControls.pub_vel()
+
+
 
     # Safe function if the node dies: only service calls or parameter setting (NO PUBLISHING)
     rospy.on_shutdown(on_shutdown)
