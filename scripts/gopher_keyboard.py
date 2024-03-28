@@ -3,15 +3,9 @@
 import rospy
 
 import key_listener as kl
-from chest_mapping import chestMapping
-from arm_mapping import armMapping
 from base_mapping import baseMapping
 
 import key_state_machine as ksm
-
-def on_shutdown():
-    # Stop the chest motion
-    chestControls.stop_srv()
 
 def change_module(**kwargs):
     try:
@@ -25,9 +19,6 @@ if __name__ == '__main__':
 
     rospy.init_node("gopher_keyboard_control", anonymous=True)   
 
-    rightArmControls = armMapping("/right", 0, -45, 90)
-    leftArmControls = armMapping("/left", 0, -45, -90)
-    chestControls = chestMapping("/chest")
     baseControls = baseMapping("/base")
 
     ksm.keyStateMachine(key_name='up', on_press=change_module, module_name="/chest")
@@ -47,8 +38,3 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
         # Update mobile base velocities and publish
         baseControls.pub_vel()
-
-
-
-    # Safe function if the node dies: only service calls or parameter setting (NO PUBLISHING)
-    rospy.on_shutdown(on_shutdown)
